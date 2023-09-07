@@ -1,6 +1,7 @@
 import 'package:communal/screens/tabs/aboutus_tab.dart';
 import 'package:communal/screens/tabs/contactus_tab.dart';
 import 'package:communal/screens/tabs/home_tab.dart';
+import 'package:communal/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -18,9 +19,9 @@ class HomeScreen extends StatelessWidget {
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  const SizedBox(
-                    width: 400,
+                children: const [
+                  SizedBox(
+                    width: 500,
                     child: TabBar(
                       labelStyle:
                           TextStyle(color: Colors.black, fontFamily: 'Bold'),
@@ -28,24 +29,15 @@ class HomeScreen extends StatelessWidget {
                       unselectedLabelColor: Colors.grey,
                       tabs: [
                         Tab(
-                          text: 'HOME',
+                          text: 'MAP',
+                        ),
+                        Tab(
+                          text: 'TREES',
                         ),
                         Tab(
                           text: 'ABOUT US',
                         ),
-                        Tab(
-                          text: 'CONTACT US',
-                        ),
                       ],
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.admin_panel_settings,
                     ),
                   ),
                 ],
@@ -95,12 +87,41 @@ class HomeScreen extends StatelessWidget {
               //   ],
               // ),
 
-              Expanded(
+              const Expanded(
                 child: TabBarView(children: [
-                  const HomeTab(),
-                  const AboutUsTab(),
-                  ContactUs(),
+                  HomeTab(),
+                  AboutUsTab(),
+                  SizedBox(),
                 ]),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TextButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(Icons.facebook),
+                    label: TextWidget(
+                      text: 'sample@facebook.com',
+                      fontSize: 18,
+                    ),
+                  ),
+                  TextButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(Icons.g_mobiledata),
+                    label: TextWidget(
+                      text: 'sample@google.com',
+                      fontSize: 18,
+                    ),
+                  ),
+                  TextButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(Icons.phone),
+                    label: TextWidget(
+                      text: '09090104355',
+                      fontSize: 18,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

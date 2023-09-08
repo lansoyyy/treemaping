@@ -1,5 +1,4 @@
 import 'package:communal/screens/tabs/aboutus_tab.dart';
-import 'package:communal/screens/tabs/contactus_tab.dart';
 import 'package:communal/screens/tabs/home_tab.dart';
 import 'package:communal/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
@@ -90,8 +89,8 @@ class HomeScreen extends StatelessWidget {
               const Expanded(
                 child: TabBarView(children: [
                   HomeTab(),
-                  AboutUsTab(),
                   SizedBox(),
+                  AboutUsTab(),
                 ]),
               ),
               Row(

@@ -21,12 +21,14 @@ class TextFieldWidget extends StatefulWidget {
   final FontStyle? fontStyle;
   final String? errorText;
   final bool? isRequred;
+  final bool? enabled;
   bool? showErrorMsg;
 
   TextFieldWidget(
       {super.key,
       this.hint = '',
       this.isRequred = true,
+      this.enabled = true,
       this.fontStyle = FontStyle.italic,
       this.label,
       this.prefixIcon,
@@ -103,7 +105,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
             style: const TextStyle(
               fontFamily: 'Regular',
               fontSize: 14,
-              color: Colors.white,
+              color: Colors.black,
             ),
             textCapitalization: widget.textCapitalization!,
             keyboardType: widget.inputType,

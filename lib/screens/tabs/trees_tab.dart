@@ -1,10 +1,11 @@
-import 'dart:collection';
-
+import 'package:communal/widgets/button_widget.dart';
 import 'package:communal/widgets/textfield_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../widgets/text_widget.dart';
+
+List<LatLng> point = [];
 
 class TreesTab extends StatefulWidget {
   const TreesTab({super.key});
@@ -26,7 +27,13 @@ class _TreesTabState extends State<TreesTab> {
 
   late double lat;
   late double long;
-  Set<Polygon> polygon = HashSet<Polygon>();
+
+  Polygon poly = Polygon(
+      polygonId: const PolygonId('New Poly'),
+      points: point,
+      fillColor: Colors.white.withOpacity(0.5),
+      strokeWidth: 1);
+
   @override
   Widget build(BuildContext context) {
     CameraPosition initialCameraPosition = const CameraPosition(
@@ -59,7 +66,9 @@ class _TreesTabState extends State<TreesTab> {
                     return Padding(
                       padding: const EdgeInsets.all(5.0),
                       child: GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          showTreeDetails();
+                        },
                         child: Container(
                           width: double.infinity,
                           height: 75,
@@ -201,12 +210,49 @@ class _TreesTabState extends State<TreesTab> {
                   SizedBox(
                     width: 350,
                     height: 500,
-                    child: GoogleMap(
-                      zoomControlsEnabled: false,
-                      mapType: MapType.hybrid,
-                      polygons: polygon,
-                      onMapCreated: _onMapCreated,
-                      initialCameraPosition: initialCameraPosition,
+                    child: Scaffold(
+                      floatingActionButton: point.isNotEmpty
+                          ? FloatingActionButton(
+                              child: const Icon(Icons.clear),
+                              onPressed: () {
+                                setState(() {
+                                  point.clear();
+                                });
+                              },
+                            )
+                          : null,
+                      body: SizedBox(
+                        width: 350,
+                        height: 500,
+                        child: GoogleMap(
+                          onTap: (argument) {
+                            setState(() {
+                              point.add(LatLng(
+                                  argument.latitude, argument.longitude));
+                            });
+                          },
+                          zoomControlsEnabled: false,
+                          mapType: MapType.hybrid,
+                          polygons: {poly},
+                          onMapCreated: _onMapCreated,
+                          initialCameraPosition: initialCameraPosition,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 75),
+                    child: Center(
+                      child: ButtonWidget(
+                        width: 175,
+                        radius: 100,
+                        color: Colors.black,
+                        label: 'Save',
+                        onPressed: () {},
+                      ),
                     ),
                   ),
                 ],
@@ -216,5 +262,96 @@ class _TreesTabState extends State<TreesTab> {
         ],
       ),
     );
+  }
+
+  showTreeDetails() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    width: 375,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextWidget(
+                          text: 'Picture of Tree',
+                          fontSize: 14,
+                          fontFamily: 'Bold',
+                          color: Colors.black,
+                        ),
+                        TextButton.icon(
+                          label: TextWidget(
+                            text: 'Close',
+                            fontSize: 14,
+                            fontFamily: 'Medium',
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: const Icon(
+                            Icons.close,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    width: 375,
+                    height: 200,
+                    decoration: const BoxDecoration(
+                      color: Colors.grey,
+                    ),
+                    child: const Center(
+                      child: Icon(
+                        Icons.image,
+                        size: 48,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextFieldWidget(
+                    isEnabled: false,
+                    label: 'Name of Tree',
+                    controller: nameController,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextFieldWidget(
+                    isEnabled: false,
+                    label: 'Description of Tree',
+                    controller: descController,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextFieldWidget(
+                    isEnabled: false,
+                    label: 'Location of Tree',
+                    controller: locationController,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
   }
 }

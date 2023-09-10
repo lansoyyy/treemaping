@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class ContactUs extends StatelessWidget {
+class TreesTab extends StatelessWidget {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController messageController = TextEditingController();
 
-  ContactUs({super.key});
+  TreesTab({super.key});
 
   @override
   Widget build(BuildContext context) {

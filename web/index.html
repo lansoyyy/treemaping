@@ -55,6 +55,29 @@
       });
     });
   </script>
+  <script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-core.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-storage.js";
+
+
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+  apiKey: "AIzaSyBpPh8yBpqzVkt6Q0JNPtjWrR-osV7TdE4",
+  authDomain: "treemaping-45201.firebaseapp.com",
+  projectId: "treemaping-45201",
+  storageBucket: "treemaping-45201.appspot.com",
+  messagingSenderId: "988715309097",
+  appId: "1:988715309097:web:69a45d17f9f162718d6438"
+};
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+  </script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDdXaMN5htLGHo8BkCfefPpuTauwHGXItU"></script>
   <script src="main.dart.js" type="application/javascript"></script>
 </body>

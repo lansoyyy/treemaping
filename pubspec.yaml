@@ -43,6 +43,10 @@ dependencies:
   html: ^0.15.0
   firebase_core_web: ^2.2.2
   firebase_core: ^2.7.1
+  firebase_auth: ^4.2.2
+  cloud_firestore: ^4.4.4
+  firebase_auth_web: ^5.2.10
+  firebase_storage:
 
 dev_dependencies:
   flutter_test:

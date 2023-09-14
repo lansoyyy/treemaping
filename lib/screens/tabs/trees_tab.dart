@@ -1,8 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:communal/services/add_tree.dart';
 import 'package:communal/widgets/button_widget.dart';
 import 'package:communal/widgets/textfield_widget.dart';
+import 'package:communal/widgets/toast_widget.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
+import 'dart:html';
 import '../../widgets/text_widget.dart';
 
 List<LatLng> point = [];
@@ -34,6 +38,9 @@ class _TreesTabState extends State<TreesTab> {
       fillColor: Colors.white.withOpacity(0.5),
       strokeWidth: 1);
 
+  String newUrl = '';
+
+  List<Map<String, dynamic>> coords = [];
   @override
   Widget build(BuildContext context) {
     CameraPosition initialCameraPosition = const CameraPosition(
@@ -58,68 +65,103 @@ class _TreesTabState extends State<TreesTab> {
               const SizedBox(
                 height: 20,
               ),
-              SizedBox(
-                height: 500,
-                width: 350,
-                child: ListView.builder(
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: GestureDetector(
-                        onTap: () {
-                          showTreeDetails();
-                        },
-                        child: Container(
-                          width: double.infinity,
-                          height: 75,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(color: Colors.black),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 10, right: 10),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                  color: Colors.grey,
-                                  height: 50,
-                                  width: 50,
+              StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('Trees')
+                      .snapshots(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (snapshot.hasError) {
+                      print(snapshot.error);
+                      return const Center(child: Text('Error'));
+                    }
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Padding(
+                        padding: EdgeInsets.only(top: 50),
+                        child: Center(
+                            child: CircularProgressIndicator(
+                          color: Colors.black,
+                        )),
+                      );
+                    }
+
+                    final data = snapshot.requireData;
+                    return SizedBox(
+                      height: 500,
+                      width: 350,
+                      child: ListView.builder(
+                        itemCount: data.docs.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                showTreeDetails(data.docs[index]);
+                              },
+                              child: Container(
+                                width: double.infinity,
+                                height: 75,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(color: Colors.black),
                                 ),
-                                const SizedBox(
-                                  width: 20,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 10, right: 10),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey,
+                                          image: DecorationImage(
+                                              image: NetworkImage(
+                                                data.docs[index]['imageURL'],
+                                              ),
+                                              fit: BoxFit.cover),
+                                        ),
+                                        height: 50,
+                                        width: 50,
+                                      ),
+                                      const SizedBox(
+                                        width: 20,
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          TextWidget(
+                                            text: data.docs[index]['name'],
+                                            fontSize: 16,
+                                            fontFamily: 'Bold',
+                                            color: Colors.black,
+                                          ),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          TextWidget(
+                                            text: data.docs[index]
+                                                ['description'],
+                                            fontSize: 12,
+                                            fontFamily: 'Medium',
+                                            color: Colors.black,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    TextWidget(
-                                      text: 'Name of Tree',
-                                      fontSize: 16,
-                                      fontFamily: 'Bold',
-                                      color: Colors.black,
-                                    ),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    TextWidget(
-                                      text: 'Description of Tree',
-                                      fontSize: 12,
-                                      fontFamily: 'Medium',
-                                      color: Colors.black,
-                                    ),
-                                  ],
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ),
+                          );
+                        },
                       ),
                     );
-                  },
-                ),
-              ),
+                  }),
             ],
           ),
           const SizedBox(
@@ -176,17 +218,55 @@ class _TreesTabState extends State<TreesTab> {
                   const SizedBox(
                     height: 10,
                   ),
-                  Container(
-                    width: 375,
-                    height: 200,
-                    decoration: const BoxDecoration(
-                      color: Colors.grey,
-                    ),
-                    child: const Center(
-                      child: Icon(
-                        Icons.image,
-                        size: 48,
-                        color: Colors.white,
+                  GestureDetector(
+                    onTap: () {
+                      InputElement input = FileUploadInputElement()
+                          as InputElement
+                        ..accept = 'image/*';
+                      FirebaseStorage fs = FirebaseStorage.instance;
+                      input.click();
+                      input.onChange.listen((event) {
+                        final file = input.files!.first;
+                        final reader = FileReader();
+                        reader.readAsDataUrl(file);
+                        reader.onLoadEnd.listen((event) async {
+                          var snapshot = await fs
+                              .ref()
+                              .child(DateTime.now().toString())
+                              .putBlob(file);
+                          String downloadUrl =
+                              await snapshot.ref.getDownloadURL();
+                          setState(
+                            () {
+                              newUrl = downloadUrl;
+                            },
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: TextWidget(
+                                  text: 'Photo Updated Succesfully!',
+                                  fontSize: 14,
+                                  color: Colors.white)));
+                        });
+                      });
+                    },
+                    child: Container(
+                      width: 375,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        color: Colors.grey,
+                        image: newUrl != ''
+                            ? DecorationImage(
+                                image: NetworkImage(newUrl), fit: BoxFit.cover)
+                            : null,
+                      ),
+                      child: Center(
+                        child: newUrl != ''
+                            ? const SizedBox()
+                            : const Icon(
+                                Icons.image,
+                                size: 48,
+                                color: Colors.white,
+                              ),
                       ),
                     ),
                   ),
@@ -229,6 +309,11 @@ class _TreesTabState extends State<TreesTab> {
                             setState(() {
                               point.add(LatLng(
                                   argument.latitude, argument.longitude));
+
+                              coords.add({
+                                'lat': argument.latitude,
+                                'long': argument.longitude
+                              });
                             });
                           },
                           zoomControlsEnabled: false,
@@ -251,7 +336,22 @@ class _TreesTabState extends State<TreesTab> {
                         radius: 100,
                         color: Colors.black,
                         label: 'Save',
-                        onPressed: () {},
+                        onPressed: () {
+                          addTree(nameController.text, descController.text,
+                              locationController.text, newUrl, coords);
+
+                          nameController.clear();
+                          descController.clear();
+                          locationController.clear();
+
+                          setState(() {
+                            point.clear();
+                            newUrl = '';
+                            coords.clear();
+                          });
+
+                          showToast('Tree recorded!');
+                        },
                       ),
                     ),
                   ),
@@ -264,7 +364,7 @@ class _TreesTabState extends State<TreesTab> {
     );
   }
 
-  showTreeDetails() {
+  showTreeDetails(data) {
     showDialog(
         context: context,
         builder: (context) {
@@ -307,43 +407,89 @@ class _TreesTabState extends State<TreesTab> {
                   const SizedBox(
                     height: 10,
                   ),
-                  Container(
-                    width: 375,
-                    height: 200,
-                    decoration: const BoxDecoration(
-                      color: Colors.grey,
-                    ),
-                    child: const Center(
-                      child: Icon(
-                        Icons.image,
-                        size: 48,
-                        color: Colors.white,
+                  GestureDetector(
+                    child: Container(
+                      width: 375,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        color: Colors.grey,
+                        image: DecorationImage(
+                          image: NetworkImage(
+                            data['imageURL'],
+                          ),
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  TextFieldWidget(
-                    isEnabled: false,
-                    label: 'Name of Tree',
-                    controller: nameController,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextWidget(
+                        text: 'Name:',
+                        fontSize: 12,
+                        fontFamily: 'Regular',
+                        color: Colors.grey,
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      TextWidget(
+                        text: data['name'],
+                        fontSize: 15,
+                        fontFamily: 'Bold',
+                        color: Colors.black,
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 10,
                   ),
-                  TextFieldWidget(
-                    isEnabled: false,
-                    label: 'Description of Tree',
-                    controller: descController,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextWidget(
+                        text: 'Description:',
+                        fontSize: 12,
+                        fontFamily: 'Regular',
+                        color: Colors.grey,
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      TextWidget(
+                        text: data['description'],
+                        fontSize: 15,
+                        fontFamily: 'Bold',
+                        color: Colors.black,
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 10,
                   ),
-                  TextFieldWidget(
-                    isEnabled: false,
-                    label: 'Location of Tree',
-                    controller: locationController,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextWidget(
+                        text: 'Location:',
+                        fontSize: 12,
+                        fontFamily: 'Regular',
+                        color: Colors.grey,
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      TextWidget(
+                        text: data['location'],
+                        fontSize: 15,
+                        fontFamily: 'Bold',
+                        color: Colors.black,
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 20,

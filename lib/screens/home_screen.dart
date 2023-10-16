@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
       length: widget.inUser! ? 2 : 3,
       child: Scaffold(
         body: Padding(
-          padding: const EdgeInsets.fromLTRB(50, 20, 50, 20),
+          padding: const EdgeInsets.all(0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -94,6 +94,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                             builder: (context) => HomeScreen(
                                                   inUser: false,
                                                 )));
+
+                                    showToast('Logged in as admin!');
                                   }
                                 },
                                 child: TextWidget(

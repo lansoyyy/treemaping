@@ -13,13 +13,13 @@ class AboutUsTab extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Card(
+            const Card(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
-                  children: const [
+                  children: [
                     CircleAvatar(
                       radius: 80,
                       // Replace with your own image
@@ -74,7 +74,7 @@ class AboutUsTab extends StatelessWidget {
               width: 300,
               child: TextWidget(
                 text:
-                    'Do cillum occaecat do officia nulla elit. Voluptate ex enim labore ad. Occaecat veniam adipisicing labore adipisicing id ut. Eiusmod commodo tempor consequat esse aute ea ipsum aute amet sint esse mollit ea officia. Consectetur esse deserunt amet culpa laborum. Mollit aliqua eiusmod deserunt nisi non cupidatat consequat dolore voluptate et ex aliqua laborum ex. Sunt mollit cupidatat aliquip mollit amet magna fugiat. Velit anim eiusmod commodo culpa sit et pariatur fugiat labore ut. Irure excepteur culpa ad ea enim aliquip id minim. Consequat ut cillum nostrud sint mollit qui culpa irure ut ea tempor. Adipisicing labore cupidatat dolor ullamco ipsum aliqua ea esse.',
+                    'Kisolon Tree Park, nestled in the heart of Brgy. Kisolon, Sumilao, Bukidnon, is a natural wonderland celebrated for its thriving biodiversity and plethora of native tree species. The park sprawls across rolling hills, dense woodlands, and pristine streams, providing a haven for tree species like Narra, Tanguile, Molave, Almond, Lauan, Tipolo, and Tulips, each uniquely adapted to its local habitat. Beyond its ecological significance, Kisolon Tree Park stands as a testament to the enduring power of community-led conservation efforts. Local government agencies, non-profit organizations, and community groups collaborate diligently to execute sustainable reforestation practices, monitor wildlife populations, and bolster environmental education initiatives. In addition to its role in conservation, the park beckons eco-enthusiasts and nature lovers with its extensive trail network, scenic beauty, and opportunities for bird-watching and wildlife observation. It also holds a profound cultural and historical value, serving as a sacred site where indigenous traditions and ecological wisdom are lovingly preserved. Kisolon Tree Park represents a powerful call to action for the preservation and rejuvenation of our forests, fostering the well-being of both the environment and future generations.',
                 fontSize: 14,
                 color: Colors.grey,
                 fontFamily: 'Regular',

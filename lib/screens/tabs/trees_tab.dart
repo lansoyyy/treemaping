@@ -21,7 +21,8 @@ class TreesTab extends StatefulWidget {
 class _TreesTabState extends State<TreesTab> {
   final nameController = TextEditingController();
   final descController = TextEditingController();
-  final locationController = TextEditingController();
+  final latController = TextEditingController();
+  final longController = TextEditingController();
 
   GoogleMapController? mapController;
 
@@ -29,18 +30,11 @@ class _TreesTabState extends State<TreesTab> {
     mapController = controller;
   }
 
-  late double lat;
-  late double long;
-
-  Polygon poly = Polygon(
-      polygonId: const PolygonId('New Poly'),
-      points: point,
-      fillColor: Colors.white.withOpacity(0.5),
-      strokeWidth: 1);
+  double lat = 0;
+  double long = 0;
 
   String newUrl = '';
 
-  List<Map<String, dynamic>> coords = [];
   @override
   Widget build(BuildContext context) {
     CameraPosition initialCameraPosition = const CameraPosition(
@@ -203,8 +197,15 @@ class _TreesTabState extends State<TreesTab> {
                     height: 10,
                   ),
                   TextFieldWidget(
-                    label: 'Location of Tree',
-                    controller: locationController,
+                    label: 'Latitude Location of Tree',
+                    controller: latController,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextFieldWidget(
+                    label: 'Longitude Location of Tree',
+                    controller: longController,
                   ),
                   const SizedBox(
                     height: 20,
@@ -305,20 +306,9 @@ class _TreesTabState extends State<TreesTab> {
                         width: 350,
                         height: 500,
                         child: GoogleMap(
-                          onTap: (argument) {
-                            setState(() {
-                              point.add(LatLng(
-                                  argument.latitude, argument.longitude));
-
-                              coords.add({
-                                'lat': argument.latitude,
-                                'long': argument.longitude
-                              });
-                            });
-                          },
+                          onTap: (argument) {},
                           zoomControlsEnabled: false,
                           mapType: MapType.hybrid,
-                          polygons: {poly},
                           onMapCreated: _onMapCreated,
                           initialCameraPosition: initialCameraPosition,
                         ),
@@ -337,17 +327,15 @@ class _TreesTabState extends State<TreesTab> {
                         color: Colors.black,
                         label: 'Save',
                         onPressed: () {
-                          addTree(nameController.text, descController.text,
-                              locationController.text, newUrl, coords);
+                          addTree(nameController.text, descController.text, '',
+                              newUrl, []);
 
                           nameController.clear();
                           descController.clear();
-                          locationController.clear();
 
                           setState(() {
                             point.clear();
                             newUrl = '';
-                            coords.clear();
                           });
 
                           showToast('Tree recorded!');

@@ -22,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final passController = TextEditingController();
+    final usernameController = TextEditingController();
 
     return DefaultTabController(
       length: widget.inUser! ? 2 : 3,
@@ -70,22 +71,34 @@ class _HomeScreenState extends State<HomeScreen> {
                         builder: (context) {
                           return AlertDialog(
                             title: TextWidget(
-                              text: 'Enter Admin Password',
+                              text: 'Enter Admin Credentails',
                               fontSize: 18,
                               fontFamily: 'Bold',
                             ),
-                            content: SizedBox(
-                              height: 100,
-                              child: TextFieldWidget(
-                                  label: 'Password',
-                                  showEye: true,
-                                  isObscure: true,
-                                  controller: passController),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(
+                                  height: 100,
+                                  child: TextFieldWidget(
+                                      label: 'Username',
+                                      controller: usernameController),
+                                ),
+                                SizedBox(
+                                  height: 100,
+                                  child: TextFieldWidget(
+                                      label: 'Password',
+                                      showEye: true,
+                                      isObscure: true,
+                                      controller: passController),
+                                ),
+                              ],
                             ),
                             actions: [
                               TextButton(
                                 onPressed: () {
-                                  if (passController.text != 'password123') {
+                                  if (passController.text != 'admin-username' &&
+                                      passController.text != 'admin-password') {
                                     Navigator.pop(context);
                                     showToast('Incorrect admin password!');
                                   } else {

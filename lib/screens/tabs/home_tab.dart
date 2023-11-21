@@ -1,9 +1,8 @@
-import 'dart:collection';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:communal/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart' as lt;
 
 class HomeTab extends StatefulWidget {
   const HomeTab({super.key});
@@ -17,69 +16,81 @@ class _HomeTabState extends State<HomeTab> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getTrees();
+    // getTrees();
   }
 
-  GoogleMapController? mapController;
+  // GoogleMapController? mapController;
 
-  void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
-  }
+  // void _onMapCreated(GoogleMapController controller) {
+  //   mapController = controller;
+  // }
 
   late double lat;
   late double long;
-  Set<Polygon> polygon = HashSet<Polygon>();
+  // Set<Polygon> polygon = HashSet<Polygon>();
 
-  CameraPosition initialCameraPosition = const CameraPosition(
-    target: LatLng(8.332155, 124.975465),
-    zoom: 14,
-  );
+  // CameraPosition initialCameraPosition = const CameraPosition(
+  //   target: LatLng(8.332155, 124.975465),
+  //   zoom: 14,
+  // );
 
   bool hasLoaded = false;
 
-  getTrees() async {
-    FirebaseFirestore.instance
-        .collection('Trees')
-        .get()
-        .then((QuerySnapshot querySnapshot) async {
-      for (var doc in querySnapshot.docs) {
-        List<LatLng> lats = [];
+  // getTrees() async {
+  //   FirebaseFirestore.instance
+  //       .collection('Trees')
+  //       .get()
+  //       .then((QuerySnapshot querySnapshot) async {
+  //     for (var doc in querySnapshot.docs) {
+  //       List<LatLng> lats = [];
 
-        for (int i = 0; i < doc['coordinates'].length; i++) {
-          lats.add(LatLng(
-              doc['coordinates'][i]['lat'], doc['coordinates'][i]['long']));
-        }
-        setState(() {
-          polygon.add(Polygon(
-              onTap: () {
-                showTreeDetails(doc);
-              },
-              fillColor: Colors.white.withOpacity(0.5),
-              strokeWidth: 1,
-              polygonId: PolygonId(doc['name']),
-              points: lats));
-        });
+  //       for (int i = 0; i < doc['coordinates'].length; i++) {
+  //         lats.add(LatLng(
+  //             doc['coordinates'][i]['lat'], doc['coordinates'][i]['long']));
+  //       }
+  //       setState(() {
+  //         polygon.add(Polygon(
+  //             onTap: () {
+  //               showTreeDetails(doc);
+  //             },
+  //             fillColor: Colors.white.withOpacity(0.5),
+  //             strokeWidth: 1,
+  //             polygonId: PolygonId(doc['name']),
+  //             points: lats));
+  //       });
 
-        print(lats);
-      }
-    });
+  //       print(lats);
+  //     }
+  //   });
 
-    setState(() {
-      hasLoaded = true;
-    });
-  }
+  //   setState(() {
+  //     hasLoaded = true;
+  //   });
+  // }
+
+  List<CircleMarker> circles = [];
+
+  final controller = MapController();
 
   @override
   Widget build(BuildContext context) {
-    return hasLoaded
+    return true
         ? Stack(
             children: [
-              GoogleMap(
-                zoomControlsEnabled: false,
-                mapType: MapType.hybrid,
-                polygons: polygon,
-                onMapCreated: _onMapCreated,
-                initialCameraPosition: initialCameraPosition,
+              FlutterMap(
+                mapController: controller,
+                options:
+                    MapOptions(zoom: 15, center: lt.LatLng(8.3322, 124.9755)),
+                children: [
+                  TileLayer(
+                    urlTemplate:
+                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    userAgentPackageName: 'com.example.app',
+                  ),
+                  CircleLayer(
+                    circles: circles,
+                  ),
+                ],
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 50, right: 20, top: 50),
@@ -136,16 +147,38 @@ class _HomeTabState extends State<HomeTab> {
                                           child: GestureDetector(
                                             onTap: () {
                                               setState(() {
-                                                mapController!.moveCamera(CameraUpdate
-                                                    .newCameraPosition(CameraPosition(
-                                                        zoom: 14,
-                                                        target: LatLng(
-                                                            data.docs[index][
-                                                                    'coordinates']
-                                                                [0]['lat'],
-                                                            data.docs[index]
-                                                                    ['coordinates']
-                                                                [0]['long']))));
+                                                circles.add(CircleMarker(
+                                                    borderColor: Colors.black,
+                                                    borderStrokeWidth: 1,
+                                                    color: Colors.red,
+                                                    point: lt.LatLng(
+                                                        data.docs[index]
+                                                                ['coordinates']
+                                                            [0]['lat'],
+                                                        data.docs[index]
+                                                                ['coordinates']
+                                                            [0]['long']),
+                                                    radius: 10));
+
+                                                controller.move(
+                                                    lt.LatLng(
+                                                        data.docs[index]
+                                                                ['coordinates']
+                                                            [0]['lat'],
+                                                        data.docs[index]
+                                                                ['coordinates']
+                                                            [0]['long']),
+                                                    18);
+                                                // mapController!.moveCamera(CameraUpdate
+                                                //     .newCameraPosition(CameraPosition(
+                                                //         zoom: 14,
+                                                //         target: LatLng(
+                                                //             data.docs[index][
+                                                //                     'coordinates']
+                                                //                 [0]['lat'],
+                                                //             data.docs[index]
+                                                //                     ['coordinates']
+                                                //                 [0]['long']))));
                                               });
                                             },
                                             child: Container(

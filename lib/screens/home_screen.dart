@@ -187,35 +187,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             const AboutUsTab(),
                           ]),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  TextButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.facebook),
-                    label: TextWidget(
-                      text: 'sample@facebook.com',
-                      fontSize: 18,
-                    ),
-                  ),
-                  TextButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.g_mobiledata),
-                    label: TextWidget(
-                      text: 'sample@google.com',
-                      fontSize: 18,
-                    ),
-                  ),
-                  TextButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.phone),
-                    label: TextWidget(
-                      text: '09090104355',
-                      fontSize: 18,
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
         ),

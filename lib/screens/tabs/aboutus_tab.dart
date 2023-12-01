@@ -35,7 +35,7 @@ class AboutUsTab extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     const Text(
-                      'We are a creative team of developers and designers.',
+                      'The greatest wealth is a healty planet',
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 16),
                     ),
@@ -63,7 +63,7 @@ class AboutUsTab extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     const Text(
-                      'Email: contact@example.com\nPhone: +1 (123) 456-7890',
+                      'Email: mariobaldo2001@gmail.com\nPhone: +1 (123) 456-7890',
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 16),
                     ),

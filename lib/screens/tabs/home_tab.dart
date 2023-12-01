@@ -79,8 +79,8 @@ class _HomeTabState extends State<HomeTab> {
             children: [
               FlutterMap(
                 mapController: controller,
-                options:
-                    MapOptions(zoom: 15, center: lt.LatLng(8.3322, 124.9755)),
+                options: MapOptions(
+                    zoom: 15, center: lt.LatLng(8.333504, 124.972149)),
                 children: [
                   TileLayer(
                     urlTemplate:

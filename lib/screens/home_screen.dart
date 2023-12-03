@@ -98,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   actions: [
                                     TextButton(
                                       onPressed: () {
-                                        if (passController.text !=
+                                        if (usernameController.text !=
                                                 'admin-username' &&
                                             passController.text !=
                                                 'admin-password') {

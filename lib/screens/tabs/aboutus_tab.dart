@@ -98,7 +98,7 @@ class AboutUsTab extends StatelessWidget {
                       ),
                       const SizedBox(height: 10),
                       const Text(
-                        'Email: mariobaldo2001@gmail.com\nPhone: +1 (123) 456-7890',
+                        'Email: mariobaldo2001@gmail.com\nPhone: 09756419201',
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 16),
                       ),

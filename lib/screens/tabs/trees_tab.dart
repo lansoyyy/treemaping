@@ -116,7 +116,6 @@ class _TreesTabState extends State<TreesTab> {
                                       children: [
                                         Container(
                                           decoration: BoxDecoration(
-                                            color: Colors.grey,
                                             image: DecorationImage(
                                                 image: NetworkImage(
                                                   data.docs[index]['imageURL'],

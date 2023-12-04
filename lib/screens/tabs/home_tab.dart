@@ -199,9 +199,17 @@ class _HomeTabState extends State<HomeTab> {
                                                       MainAxisAlignment.start,
                                                   children: [
                                                     Container(
-                                                      color: Colors.grey,
                                                       height: 50,
                                                       width: 50,
+                                                      decoration: BoxDecoration(
+                                                        image: DecorationImage(
+                                                          image: NetworkImage(
+                                                            data.docs[index]
+                                                                ['imageURL'],
+                                                          ),
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      ),
                                                     ),
                                                     const SizedBox(
                                                       width: 20,
@@ -308,7 +316,6 @@ class _HomeTabState extends State<HomeTab> {
                       width: 375,
                       height: 200,
                       decoration: BoxDecoration(
-                        color: Colors.grey,
                         image: DecorationImage(
                           image: NetworkImage(
                             data['imageURL'],

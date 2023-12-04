@@ -158,6 +158,14 @@ class _TreesTabState extends State<TreesTab> {
                                         )),
                                         IconButton(
                                           onPressed: () async {
+                                            editTreeDetails(data.docs[index]);
+                                          },
+                                          icon: const Icon(
+                                            Icons.edit,
+                                          ),
+                                        ),
+                                        IconButton(
+                                          onPressed: () async {
                                             await FirebaseFirestore.instance
                                                 .collection('Trees')
                                                 .doc(data.docs[index].id)
@@ -530,6 +538,153 @@ class _TreesTabState extends State<TreesTab> {
                     height: 20,
                   ),
                 ],
+              ),
+            ),
+          );
+        });
+  }
+
+  final editnameController = TextEditingController();
+  final descriptionController = TextEditingController();
+  editTreeDetails(data) {
+    setState(() {
+      editnameController.text = data['name'];
+      descriptionController.text = data['description'];
+    });
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: SizedBox(
+                width: 300,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      width: 375,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TextWidget(
+                            text: 'Picture of Tree',
+                            fontSize: 14,
+                            fontFamily: 'Bold',
+                            color: Colors.black,
+                          ),
+                          TextButton.icon(
+                            label: TextWidget(
+                              text: 'Close',
+                              fontSize: 14,
+                              fontFamily: 'Medium',
+                            ),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: const Icon(
+                              Icons.close,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    GestureDetector(
+                      child: Container(
+                        width: 375,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          color: Colors.grey,
+                          image: DecorationImage(
+                            image: NetworkImage(
+                              data['imageURL'],
+                            ),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextFieldWidget(
+                          controller: editnameController,
+                          label: 'Name',
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextFieldWidget(
+                          controller: descriptionController,
+                          label: 'Description',
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextWidget(
+                          text: 'Location:',
+                          fontSize: 12,
+                          fontFamily: 'Regular',
+                          color: Colors.grey,
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        TextWidget(
+                          text: data['location'],
+                          fontSize: 15,
+                          fontFamily: 'Bold',
+                          color: Colors.black,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: TextButton(
+                        onPressed: () async {
+                          await FirebaseFirestore.instance
+                              .collection('Trees')
+                              .doc(data.id)
+                              .update({
+                            'name': editnameController.text,
+                            'description': descriptionController.text
+                          });
+                          Navigator.pop(context);
+                          showToast('Edited succesfully!');
+                        },
+                        child: TextWidget(
+                          text: 'Save',
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                  ],
+                ),
               ),
             ),
           );
